@@ -1,4 +1,4 @@
-AZURE_LOCATION: 'centralus'
+AZURE_LOCATION: 'westus2 '
 RESOURCE_NAME_PREFIX: 'apimdemo'
 ENVIRONMENT_TAG: 'dev'
 DEPLOYMENT_NAME: 'ase-demo-deployment'
