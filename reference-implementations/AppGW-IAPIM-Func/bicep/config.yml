@@ -1,5 +1,5 @@
 AZURE_LOCATION: 'canadacentral'
-RESOURCE_NAME_PREFIX: 'jmapim'
+RESOURCE_NAME_PREFIX: 'jm-apim'
 ENVIRONMENT_TAG: 'dev'
 DEPLOYMENT_NAME: 'jmapim'
 VM_USERNAME: 'jm-azure-user'
