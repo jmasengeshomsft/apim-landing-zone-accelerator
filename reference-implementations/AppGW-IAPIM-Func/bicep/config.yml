@@ -1,4 +1,4 @@
-AZURE_LOCATION: 'centralcanada'
+AZURE_LOCATION: 'canadacentral'
 RESOURCE_NAME_PREFIX: 'jm-apim'
 ENVIRONMENT_TAG: 'dev'
 DEPLOYMENT_NAME: 'jmapim'
