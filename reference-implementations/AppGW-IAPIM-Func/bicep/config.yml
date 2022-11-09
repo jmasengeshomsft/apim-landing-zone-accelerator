@@ -1,4 +1,4 @@
-AZURE_LOCATION: 'Central US'
+AZURE_LOCATION: 'centralus'
 RESOURCE_NAME_PREFIX: 'apimdemo'
 ENVIRONMENT_TAG: 'dev'
 DEPLOYMENT_NAME: 'ase-demo-deployment'
