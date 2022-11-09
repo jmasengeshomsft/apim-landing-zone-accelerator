@@ -107,29 +107,29 @@ module backend './backend/backend.bicep' = {
   }
 }
 
-// var jumpboxSubnetId= networking.outputs.jumpBoxSubnetid
-// var CICDAgentSubnetId = networking.outputs.CICDAgentSubnetId
+var jumpboxSubnetId= networking.outputs.jumpBoxSubnetid
+var CICDAgentSubnetId = networking.outputs.CICDAgentSubnetId
 
-// module shared './shared/shared.bicep' = {
-//   dependsOn: [
-//     networking
-//   ]
-//   name: 'sharedresources'
-//   scope: resourceGroup(sharedRG.name)
-//   params: {
-//     accountName: accountName
-//     CICDAgentSubnetId: CICDAgentSubnetId
-//     CICDAgentType: CICDAgentType
-//     environment: environment
-//     jumpboxSubnetId: jumpboxSubnetId
-//     location: location
-//     personalAccessToken: personalAccessToken
-//     resourceGroupName: sharedRG.name
-//     resourceSuffix: resourceSuffix
-//     vmPassword: vmPassword
-//     vmUsername: vmUsername
-//   }
-// }
+module shared './shared/shared.bicep' = {
+  dependsOn: [
+    networking
+  ]
+  name: 'sharedresources'
+  scope: resourceGroup(sharedRG.name)
+  params: {
+    accountName: accountName
+    CICDAgentSubnetId: CICDAgentSubnetId
+    CICDAgentType: CICDAgentType
+    environment: environment
+    jumpboxSubnetId: jumpboxSubnetId
+    location: location
+    personalAccessToken: personalAccessToken
+    resourceGroupName: sharedRG.name
+    resourceSuffix: resourceSuffix
+    vmPassword: vmPassword
+    vmUsername: vmUsername
+  }
+}
 
 module apimModule 'apim/apim.bicep'  = {
   name: 'apimDeploy'
