@@ -23,6 +23,7 @@ Createa a Private DNS ZOne, A Record and Vnet Link for each of the below endpoin
 
 API Gateway	                contosointernalvnet.azure-api.net
 Developer portal	          contosointernalvnet.portal.azure-api.net
+Gateway Configurations	    contosointernalvnet.configuration.azure-api.net
 The new developer portal	  contosointernalvnet.developer.azure-api.net
 Direct management endpoint	contosointernalvnet.management.azure-api.net
 Git	                        contosointernalvnet.scm.azure-api.net
@@ -59,6 +60,15 @@ resource developerDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 
 resource managementDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: 'management.azure-api.net'
+  location: 'global'
+  dependsOn: [
+    vnet
+  ]
+  properties: {}
+}
+
+resource configurationDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'configuration.azure-api.net'
   location: 'global'
   dependsOn: [
     vnet
@@ -130,6 +140,22 @@ resource managementRecord 'Microsoft.Network/privateDnsZones/A@2020-06-01' = {
   dependsOn: [
     apim
     managementDnsZone
+  ]
+  properties: {
+    aRecords: [
+      {
+        ipv4Address: apim.properties.privateIPAddresses[0]
+      }
+    ]
+    ttl: 36000
+  }
+}
+
+resource configurationRecord 'Microsoft.Network/privateDnsZones/A@2020-06-01' = {
+  name: 'configuration.azure-api.net/${apimName}'
+  dependsOn: [
+    apim
+    configurationDnsZone
   ]
   properties: {
     aRecords: [
