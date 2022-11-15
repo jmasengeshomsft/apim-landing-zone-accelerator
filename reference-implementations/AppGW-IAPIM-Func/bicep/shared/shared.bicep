@@ -116,7 +116,7 @@ resource key_vault 'Microsoft.KeyVault/vaults@2019-09-01' = {
       //       'string'
       //     ]
       //     storage: [
-      //       'string'
+      //       'string'git 
       //     ]
       //   }
       // }
