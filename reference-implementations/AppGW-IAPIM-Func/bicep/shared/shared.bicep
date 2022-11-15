@@ -97,7 +97,9 @@ resource key_vault 'Microsoft.KeyVault/vaults@2019-09-01' = {
     sku: {
       family: 'A'
       name: 'standard'
-    }    
+    }
+    enablePurgeProtection: false
+    enableRbacAuthorization: true   
     accessPolicies: [
       // {
       //   tenantId: 'string'
