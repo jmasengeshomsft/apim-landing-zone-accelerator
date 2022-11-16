@@ -16,12 +16,12 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
 
 ## How to deploy in your environment
 
-1. "Deploy to Azure" Button
+1. AZ CLI
 
     ```azcli
-    az deployment sub create --location eastus --name am --template-file main.bicep --parameters workloadName=am environment=dev
+    az deployment sub create --location centralus --name am --template-file main.bicep --parameters workloadName=am environment=dev vmUsername=azureuser vmPassword=Azure1234567890 accountName=github.com/jmasengeshomsft personalAccessToken=dfsdfdfd CICDAgentType=none 
 
-2. AZ CLI 
+2. Deploy to Azure Button 
 3. Pipeline with GitHub Actions:
 
 
