@@ -1,5 +1,5 @@
 
-# Enterprise-Scale-APIM Lite
+# Enterprise-Scale-APIM Lite (Fork)
 
 This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-landing-zone-accelerator). Checkout the original repository for a complete enterprise deployment reference. This fork focuses on demonstrating how to successfully provision an internal APIM instance in an existing dev environment (spoke vnet). 
 
