@@ -16,7 +16,8 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
 
 ## How to deploy in your environment
 
-1. AZ CLI
+1. ### AZ CLI
+   
    From the home directory run the following:
 
     ```azcli
@@ -37,7 +38,7 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
     # run the bicep deploy commant at the subscription level 
     az deployment sub create --location $location --name $name --template-file main.bicep --parameters workloadName=$workloadName environment=$environment CICDAgentType=none
 
-4. Pipeline with GitHub Actions
+4. ### Pipeline with GitHub Actions
 
    To deploy resources in an Azure Subscription, we will use the pipeline under .github/workflows/es-apim.yaml
 
@@ -52,7 +53,7 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
         ```azcli
           cd reference-implementations/AppGW-IAPIM-Func/bicep
 
-     ### Deployment Parameters
+     **Deployment Parameters**
      
       Update **config.yaml** with your variables:
 
@@ -62,7 +63,7 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
          ENVIRONMENT_TAG: 'dev'
          CICD_AGENT_TYPE: 'none'
 
-     ### AZ Login With a Service Principal
+     **AZ Login With a Service Principal**
 
      [The original repository](https://github.com/jmasengeshomsft/apim-landing-zone-accelerator-lite/tree/main/docs#2-authentication-from-github-to-azure) uses OpenID Connect (OIDC) with a Azure service principal using a Federated Identity Credential. For simplicity in this fork, we will use a service principal with secret. We will only need to set up one action secret wit four pieces information in a json object. If you prefer Federated authentication, follow the documentation in the [original repo](https://github.com/jmasengeshomsft/apim-landing-zone-accelerator-lite/tree/main/docs#2-authentication-from-github-to-azure) and adjust the pipeline accordingly. 
 
