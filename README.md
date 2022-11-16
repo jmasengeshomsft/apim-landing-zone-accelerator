@@ -21,14 +21,19 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
 
     ```azcli
     cd reference-implementations/AppGW-IAPIM-Func/bicep
+    
     #azure location
     location="centralus"
+    
     #name of the deployment
     name="am"
+    
     #prefix to be used in naming resources
     workloadName="am"
+    
     #environment, used in naming resources
     environment="dev"
+    
     # run the bicep deploy commant at the subscription level 
     az deployment sub create --location $location --name $name --template-file main.bicep --parameters workloadName=$workloadName environment=$environment vmUsername=azureuser vmPassword=Azure1234567890 accountName=github.com/jmasengeshomsft personalAccessToken=dfsdfdfd CICDAgentType=none 
 
