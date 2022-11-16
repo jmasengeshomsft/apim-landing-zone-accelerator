@@ -60,7 +60,7 @@ var apimResourceGroupName = 'rg-apim-${resourceSuffix}'
 
 // Resource Names
 var apimName = 'apim-${resourceSuffix}'
-var appGatewayName = 'appgw-${resourceSuffix}'
+//var appGatewayName = 'appgw-${resourceSuffix}'
 
 
 resource networkingRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
