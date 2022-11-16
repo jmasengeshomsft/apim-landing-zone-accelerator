@@ -61,6 +61,9 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
       CICD_AGENT_TYPE: 'none'
    
   ## AZ Login With a Service Principal
+ 
+  [The original repository](https://github.com/jmasengeshomsft/apim-landing-zone-accelerator-lite/tree/main/docs#2-authentication-from-github-to-azure) uses OpenID Connect (OIDC) with a Azure service principal using a Federated Identity Credential, for simplicity in this fork, we will use a service principal with secret. We will only need to set up one action secret wit four pieces information in a json object.
+  
 
 ### Reference Implementation 1: App Gateway with internal APIM instance with Azure Functions as backend
 
