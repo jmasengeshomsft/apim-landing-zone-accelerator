@@ -1,32 +1,50 @@
-# Enterprise-Scale-APIM
 
-This is a repository ([aka.ms/EnterpriseScale-APIM](https://aka.ms/EnterpriseScale-APIM)) that contains both enterprise architecture (proven recommendations and considerations) and reference implementaion (deployable artifacts for a common implementations).
+# Enterprise-Scale-APIM Lite (Fork)
 
-## Enterprise-Scale Architecture
+This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-landing-zone-accelerator). Checkout the original repository for a complete enterprise deployment reference. This fork focuses on demonstrating how to successfully provision an internal APIM instance in an existing dev environment (spoke vnet). 
 
-The enterprise architecture is broken down into six different design areas, where you can find the links to each at:
-| Design Area|Considerations|Recommendations|
-|:--------------:|:--------------:|:--------------:|
-| Identity and Access Management|[Design Considerations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/api-management/identity-and-access-management#design-considerations)|[Design Recommendations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/api-management/identity-and-access-management#design-recommendations)|
-| Network Topology and Connectivity|[Design Considerations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/api-management/network-topology-and-connectivity#design-considerations)|[Design Recommendations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/api-management/network-topology-and-connectivity#design-recommendations)|
-| Security|[Design Considerations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/api-management/security#design-considerations)|[Design Recommendations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/api-management/security#design-recommendations)|
-| Management|[Design Considerations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/api-management/management#design-considerations)|[Design Recommendations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/api-management/management#design-recommendation)|
-| Governance|[Design Considerations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/api-management/governance#design-considerations)|[Design Recommendations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/api-management/governance#design-recommendations)|
-| Platform Automation and DevOps|[Design Considerations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/api-management/platform-automation-and-devops#design-considerations)|[Design Recommendations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/api-management/platform-automation-and-devops#design-recommendations)|
+## What was ommitted: 
+- Application Gateway
+- Jumpbox and Build Agent VMs
+- Backend workload : Azure Functions
+- CI/CD sections that utilizes [Azure API Management DevOps Resource Kit](https://github.com/Azure/azure-api-management-devops-resource-kit)
 
-## Enterprise-Scale Reference Implementation
+## What was added:
 
-In this repo you will also find reference implementations with supporting Infrastructure as Code templates. More reference implementations will be added as they become available.
+- An additional Private DNS Zone **configuration.azure-api.net** to support Self-Hosted Gateways
+- Ability to deploy into an existing Virtual Network (WIP)
 
----
+## How to deploy in your environment
+
+1. AZ CLI
+   From the home directory run the following:
+
+    ```azcli
+    cd reference-implementations/AppGW-IAPIM-Func/bicep
+    
+    #azure location
+    location="centralus"
+    
+    #name of the deployment
+    name="am"
+    
+    #prefix to be used in naming resources
+    workloadName="am"
+    
+    #environment, used in naming resources
+    environment="dev"
+    
+    # run the bicep deploy commant at the subscription level 
+    az deployment sub create --location $location --name $name --template-file main.bicep --parameters workloadName=$workloadName environment=$environment CICDAgentType=none
+
+4. Pipeline with GitHub Actions:
+
 
 ### Reference Implementation 1: App Gateway with internal APIM instance with Azure Functions as backend
 
 Architectural Diagram:
 ![image](/docs/images/arch.png)
 
-Resources Deployed:
-![image](/docs/images/deployed-items.png)
 
 Deployment Details:
 | Deployment Methodology| GitHub Action YAML| User Guide|
@@ -36,59 +54,5 @@ Deployment Details:
 | Terraform (Coming soon)||
 ---
 
-## Generating the ARM Template
 
-### Process
-
-When we developed this Landing Zone Accelerator, we chose Bicep as our first Infrastructure as Code deployment method due to its many advantages. We were excited about trying a new IaC experience and drawn to its declarative nature and ease to onboard compared to ARM templates. Another benefit that we recognized was the capability to generate ARM templates from a Bicep template, which we leverage as part of our GitHub workflow. 
-
-During our deployment, we added several Bicep validation / preflight checks as seen in our [Action yaml file](/.github/workflows/es-apim.yml). If those validations pass without errors, we continue to deploy the Bicep template. If Bicep deploys without any error, we begin to generate the ARM template as a next [Job](https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow) in GitHub Action using the command below. We have opted to not include additional validation steps solely on the ARM template given the reasons specified below. 
-
-```yaml
-az bicep build --file main.bicep --outfile ../azure-resource-manager/apim-arm.json
-```
-
-### Storing the ARM Template
-
-After the ARM Template is generated, we create a branch from the main branch and uses the 'run_number' of GitHub Action to push the ARM template to the newly created branch.
-
-Again, you can find the details in [Action yaml file](/.github/workflows/es-apim.yml)
-
-### Generated ARM Template Validation
-
----
-There are several ways to **Validate** an ARM Template;
-
-- Syntax: Code
-
-- Behavior: What is the code doing that you may want to be aware of? Are you handling secure parameters (e.g. secrets) correctly? Is the use of location for resources reasonable? Do you have practices that may cause problems across environments (subs, clouds, etc.)?
-
-- Result: What does the code do (deploy) or not that you may want to be aware of? (no NSGs or NSGs too permissive, password vs key authentication)
-
-- Intent: Does the code do what it is intended to do?
-
-- Success: Does the code successfully deploy?
-
-**Syntax**: For syntax check ```bicep build``` completes that validation.
-
-**Behavior**: Bicep completes most of behavior checks, while [arm-ttk](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/test-toolkit) has some additional capabilities that will eventually be incorporated into Bicep or other tools. 
-
-**Result**: This can be covered using [Azure Policy](https://docs.microsoft.com/en-us/azure/governance/policy/overview). 
-
-**Intent**: We can run what-if scenarios on the ARM Template. This, however, requires human interaction and thus cannot be automated. 
-
-**Success**: Since before ARM Template, Bicep template finished successfully (otherwise ARM Template generation step would not start) so we are sure that ARM Template will work, so no need to add any validation on that. This doesn't guarantee a successful deployment as there may be other factors such as region availability, user permission, policy conflict that could lead to a failed deployment even if the ARM template is completely valid. 
-
-As a result, since the ARM Template is  generated from the Bicep template, additional steps to **validate the ARM Template** are negligible.
-
----
-
-## Other Considerations
-
-1. This is a way you can execute bicep deployment:
-
-    ```azcli
-    az deployment sub create --location eastus --name am --template-file main.bicep --parameters workloadName=am environment=dev
-
-2. Please leverage issues if you have any feedback or request on how we can improve on this repository
 
