@@ -37,8 +37,30 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
     # run the bicep deploy commant at the subscription level 
     az deployment sub create --location $location --name $name --template-file main.bicep --parameters workloadName=$workloadName environment=$environment CICDAgentType=none
 
-4. Pipeline with GitHub Actions:
+4. Pipeline with GitHub Actions
 
+   To deploy resources in an Azure Subscription, we will use the pipeline under .github/workflows/es-apim.yaml
+
+      ```azcli
+      #clone the repository
+      git clone https://github.com/jmasengeshomsft/apim-landing-zone-accelerator-lite.git
+
+  ## Set parameters
+
+  Navigate to the Bicep folder by running the following script from the repo home directory
+   
+     ```azcli
+       cd reference-implementations/AppGW-IAPIM-Func/bicep
+   
+   Update **config.yaml** with your variables:
+   
+     ```azcli
+      AZURE_LOCATION: 'centralus'
+      RESOURCE_NAME_PREFIX: 'myapim'
+      ENVIRONMENT_TAG: 'dev'
+      CICD_AGENT_TYPE: 'none'
+   
+  ## AZ Login With a Service Principal
 
 ### Reference Implementation 1: App Gateway with internal APIM instance with Azure Functions as backend
 
