@@ -14,6 +14,18 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
 - An additional Private DNS Zone **configuration.azure-api.net** to support Self-Hosted Gateways
 - Ability to deploy into an existing Virtual Network (WIP)
 
+## How to deploy in your environment
+
+1. "Deploy to Azure" Button
+
+    ```azcli
+    az deployment sub create --location eastus --name am --template-file main.bicep --parameters workloadName=am environment=dev
+
+2. AZ CLI 
+3. Pipeline with GitHub Actions:
+
+
+
 ### Reference Implementation 1: App Gateway with internal APIM instance with Azure Functions as backend
 
 Architectural Diagram:
@@ -28,14 +40,5 @@ Deployment Details:
 | Terraform (Coming soon)||
 ---
 
-## Generating the ARM Template
 
-## Other Considerations
-
-1. This is a way you can execute bicep deployment:
-
-    ```azcli
-    az deployment sub create --location eastus --name am --template-file main.bicep --parameters workloadName=am environment=dev
-
-2. Please leverage issues if you have any feedback or request on how we can improve on this repository
 
