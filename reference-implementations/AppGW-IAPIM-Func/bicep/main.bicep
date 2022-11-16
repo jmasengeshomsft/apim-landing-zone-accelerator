@@ -121,7 +121,7 @@ module shared './shared/shared.bicep' = {
     CICDAgentSubnetId: CICDAgentSubnetId
     CICDAgentType: CICDAgentType
     environment: environment
-    jumpboxSubnetId: jumpboxSubnetId
+    //jumpboxSubnetId: jumpboxSubnetId
     location: location
     personalAccessToken: personalAccessToken
     resourceGroupName: sharedRG.name

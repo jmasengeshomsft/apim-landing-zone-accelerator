@@ -3,8 +3,8 @@ targetScope='resourceGroup'
 @description('Azure location to which the resources are to be deployed')
 param location string
 
-@description('The full id string identifying the target subnet for the jumpbox VM')
-param jumpboxSubnetId string
+// @description('The full id string identifying the target subnet for the jumpbox VM')
+// param jumpboxSubnetId string
 
 @description('The full id string identifying the target subnet for the CI/CD Agent VM')
 param CICDAgentSubnetId string
