@@ -107,7 +107,7 @@ module backend './backend/backend.bicep' = {
   }
 }
 
-var jumpboxSubnetId= networking.outputs.jumpBoxSubnetid
+//var jumpboxSubnetId= networking.outputs.jumpBoxSubnetid
 var CICDAgentSubnetId = networking.outputs.CICDAgentSubnetId
 
 module shared './shared/shared.bicep' = {
