@@ -159,22 +159,22 @@ module dnsZoneModule 'shared/dnszone.bicep'  = {
   }
 }
 
-module appgwModule 'gateway/appgw.bicep' = {
-  name: 'appgwDeploy'
-  scope: resourceGroup(apimRG.name)
-  dependsOn: [
-    apimModule
-    dnsZoneModule
-  ]
-  params: {
-    appGatewayName:                 appGatewayName
-    appGatewayFQDN:                 appGatewayFqdn
-    location:                       location
-    appGatewaySubnetId:             networking.outputs.appGatewaySubnetid
-    primaryBackendEndFQDN:          '${apimName}.azure-api.net'
-    keyVaultName:                   shared.outputs.keyVaultName
-    keyVaultResourceGroupName:      sharedRG.name
-    appGatewayCertType:             appGatewayCertType
-    certPassword:                   certificatePassword
-  }
-}
+// module appgwModule 'gateway/appgw.bicep' = {
+//   name: 'appgwDeploy'
+//   scope: resourceGroup(apimRG.name)
+//   dependsOn: [
+//     apimModule
+//     dnsZoneModule
+//   ]
+//   params: {
+//     appGatewayName:                 appGatewayName
+//     appGatewayFQDN:                 appGatewayFqdn
+//     location:                       location
+//     appGatewaySubnetId:             networking.outputs.appGatewaySubnetid
+//     primaryBackendEndFQDN:          '${apimName}.azure-api.net'
+//     keyVaultName:                   shared.outputs.keyVaultName
+//     keyVaultResourceGroupName:      sharedRG.name
+//     appGatewayCertType:             appGatewayCertType
+//     certPassword:                   certificatePassword
+//   }
+// }

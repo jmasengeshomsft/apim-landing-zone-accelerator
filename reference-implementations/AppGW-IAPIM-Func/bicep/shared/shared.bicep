@@ -76,18 +76,18 @@ module vm_devopswinvm './createvmwindows.bicep' = if (toLower(CICDAgentType)!='n
   }
 }
 
-module vm_jumpboxwinvm './createvmwindows.bicep' = {
-  name: 'vm-jumpbox'
-  scope: resourceGroup(resourceGroupName)
-  params: {
-    location: location
-    subnetId: jumpboxSubnetId
-    username: vmUsername
-    password: vmPassword
-    CICDAgentType: CICDAgentType
-    vmName: 'jumpbox-${environment}'
-  }
-}
+// module vm_jumpboxwinvm './createvmwindows.bicep' = {
+//   name: 'vm-jumpbox'
+//   scope: resourceGroup(resourceGroupName)
+//   params: {
+//     location: location
+//     subnetId: jumpboxSubnetId
+//     username: vmUsername
+//     password: vmPassword
+//     CICDAgentType: CICDAgentType
+//     vmName: 'jumpbox-${environment}'
+//   }
+// }
 
 resource key_vault 'Microsoft.KeyVault/vaults@2019-09-01' = {
   name: keyVaultName
