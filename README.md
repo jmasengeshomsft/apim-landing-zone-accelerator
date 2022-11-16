@@ -1,3 +1,20 @@
+
+# Enterprise-Scale-APIM Lite
+
+This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-landing-zone-accelerator). Checkout the original repository for a complete enterprise deployment reference. This fork focuses on demonstrating how to successfully provision an internal APIM instance in an existing dev environment (spoke vnet). 
+
+## What was ommitted: 
+- Application Gateway
+- Jumpbox and Build Agent VMs
+- Backend workload : Azure Functions
+- CI/CD sections that utilizes [Azure API Management DevOps Resource Kit](https://github.com/Azure/azure-api-management-devops-resource-kit)
+
+## What was added:
+
+- An additional Private DNS Zone **configuration.azure-api.net** to support Self-Hosted Gateways
+- Ability to deploy into an existing Virtual Network (WIP)
+
+
 # Enterprise-Scale-APIM
 
 This is a repository ([aka.ms/EnterpriseScale-APIM](https://aka.ms/EnterpriseScale-APIM)) that contains both enterprise architecture (proven recommendations and considerations) and reference implementaion (deployable artifacts for a common implementations).
