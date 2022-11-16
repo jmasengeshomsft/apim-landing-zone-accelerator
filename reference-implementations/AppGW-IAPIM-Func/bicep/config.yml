@@ -1,8 +1,4 @@
 AZURE_LOCATION: 'centralus'
 RESOURCE_NAME_PREFIX: 'myapim'
 ENVIRONMENT_TAG: 'dev'
-# DEPLOYMENT_NAME: 'jmapim'
-# VM_USERNAME: 'jm-azure-user'
-# ACCOUNT_NAME: 'value'
 CICD_AGENT_TYPE: 'none'
-# CERT_TYPE: 'selfsigned'
