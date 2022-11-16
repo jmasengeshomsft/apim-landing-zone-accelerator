@@ -10,11 +10,11 @@ param location string
 param CICDAgentSubnetId string
 
 @description('The user name to be used as the Administrator for all VMs created by this deployment')
-param vmUsername string
+param vmUsername string = ''
 
 @description('The password for the Administrator user for all VMs created by this deployment')
 @secure()
-param vmPassword string
+param vmPassword string = ''
 
 @description('The CI/CD platform to be used, and for which an agent will be configured for the ASE deployment. Specify \'none\' if no agent needed')
 @allowed([
@@ -22,14 +22,14 @@ param vmPassword string
   'azuredevops'
   'none'
 ])
-param CICDAgentType string
+param CICDAgentType string = 'none'
 
 @description('The Azure DevOps or GitHub account name to be used when configuring the CI/CD agent, in the format https://dev.azure.com/ORGNAME OR github.com/ORGUSERNAME OR none')
-param accountName string
+param accountName string = ''
 
 @description('The Azure DevOps or GitHub personal access token (PAT) used to setup the CI/CD agent')
 @secure()
-param personalAccessToken string
+param personalAccessToken string = ''
 
 @description('The name of the shared resource group')
 param resourceGroupName string
