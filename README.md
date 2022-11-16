@@ -35,7 +35,7 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
     environment="dev"
     
     # run the bicep deploy commant at the subscription level 
-    az deployment sub create --location $location --name $name --template-file main.bicep --parameters workloadName=$workloadName environment=$environment
+    az deployment sub create --location $location --name $name --template-file main.bicep --parameters workloadName=$workloadName environment=$environment --CICDAgentType=none
 
 4. Pipeline with GitHub Actions:
 
