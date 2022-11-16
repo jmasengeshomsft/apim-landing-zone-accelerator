@@ -21,12 +21,7 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
     ```azcli
     az deployment sub create --location centralus --name am --template-file main.bicep --parameters workloadName=am environment=dev vmUsername=azureuser vmPassword=Azure1234567890 accountName=github.com/jmasengeshomsft personalAccessToken=dfsdfdfd CICDAgentType=none 
 
-2. Deploy to Azure Button 
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjmasengeshomsft%2Fapim-validator%2Fmain%2Finfrastructure%2Fazuredeploy.json)
-
 4. Pipeline with GitHub Actions:
-
 
 
 ### Reference Implementation 1: App Gateway with internal APIM instance with Azure Functions as backend
