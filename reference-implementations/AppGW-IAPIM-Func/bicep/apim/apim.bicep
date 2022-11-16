@@ -43,6 +43,9 @@ resource apimName_resource 'Microsoft.ApiManagement/service@2020-12-01' = {
     capacity: capacity
     name: skuName
   }
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties:{
     virtualNetworkType: 'Internal'
     publisherEmail: publisherEmail

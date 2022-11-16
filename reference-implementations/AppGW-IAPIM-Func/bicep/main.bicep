@@ -46,7 +46,7 @@ param personalAccessToken string
 // @description('Set to selfsigned if self signed certificates should be used for the Application Gateway. Set to custom and copy the pfx file to deployment/bicep/gateway/certs/appgw.pfx if custom certificates are to be used')
 // param appGatewayCertType string
 
- param location string = 'canadacentral' //deployment().location
+ param location string = deployment().location
 
 // Variables
 var resourceSuffix = '${workloadName}-${environment}-${location}-001'
