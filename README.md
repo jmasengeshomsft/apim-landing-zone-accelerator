@@ -17,8 +17,10 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
 ## How to deploy in your environment
 
 1. AZ CLI
+   From the home directory run the following:
 
     ```azcli
+    cd reference-implementations/AppGW-IAPIM-Func/bicep
     az deployment sub create --location centralus --name am --template-file main.bicep --parameters workloadName=am environment=dev vmUsername=azureuser vmPassword=Azure1234567890 accountName=github.com/jmasengeshomsft personalAccessToken=dfsdfdfd CICDAgentType=none 
 
 4. Pipeline with GitHub Actions:
