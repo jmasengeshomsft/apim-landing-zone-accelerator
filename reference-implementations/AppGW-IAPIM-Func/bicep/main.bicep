@@ -36,15 +36,15 @@ param accountName string
 @secure()
 param personalAccessToken string
 
-@description('The FQDN for the Application Gateway. Example - api.contoso.com.')
-param appGatewayFqdn string
+// @description('The FQDN for the Application Gateway. Example - api.contoso.com.')
+// param appGatewayFqdn string
 
-@description('The password for the TLS certificate for the Application Gateway.  The pfx file needs to be copied to deployment/bicep/gateway/certs/appgw.pfx')
-@secure()
-param certificatePassword string
+// @description('The password for the TLS certificate for the Application Gateway.  The pfx file needs to be copied to deployment/bicep/gateway/certs/appgw.pfx')
+// @secure()
+// param certificatePassword string
 
-@description('Set to selfsigned if self signed certificates should be used for the Application Gateway. Set to custom and copy the pfx file to deployment/bicep/gateway/certs/appgw.pfx if custom certificates are to be used')
-param appGatewayCertType string
+// @description('Set to selfsigned if self signed certificates should be used for the Application Gateway. Set to custom and copy the pfx file to deployment/bicep/gateway/certs/appgw.pfx if custom certificates are to be used')
+// param appGatewayCertType string
 
  param location string = 'canadacentral' //deployment().location
 
