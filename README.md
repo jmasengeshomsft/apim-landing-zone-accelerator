@@ -18,7 +18,13 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
 
 1. ### AZ CLI
    
-   From the home directory run the following:
+   Clone the repository
+   
+         
+         #clone the repository
+         git clone https://github.com/jmasengeshomsft/apim-landing-zone-accelerator-lite.git
+   
+   From the home directory, run the following:
 
     ```azcli
     cd reference-implementations/AppGW-IAPIM-Func/bicep
@@ -42,7 +48,7 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
 
    To deploy resources in an Azure Subscription, we will use the pipeline under .github/workflows/es-apim.yaml
 
-         ```azcli
+         
          #clone the repository
          git clone https://github.com/jmasengeshomsft/apim-landing-zone-accelerator-lite.git
 
@@ -50,14 +56,14 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
 
      Navigate to the Bicep folder by running the following script from the repo home directory
 
-         ```azcli
+         
          cd reference-implementations/AppGW-IAPIM-Func/bicep
 
      **Deployment Parameters**
      
       Update **config.yaml** with your variables:
 
-         ```azcli
+         
          AZURE_LOCATION: 'your azure region'
          RESOURCE_NAME_PREFIX: 'up to 8 letters prefix'
          ENVIRONMENT_TAG: 'dev'
