@@ -12,7 +12,7 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
 ## What was added:
 
 - An additional Private DNS Zone **configuration.azure-api.net** to support Self-Hosted Gateways
-- Ability to deploy into an existing Virtual Network (WIP)
+- Ability to deploy into an existing Virtual Network (In progress)
 
 ## How to deploy in your environment
 
