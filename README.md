@@ -24,13 +24,13 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
     cd reference-implementations/AppGW-IAPIM-Func/bicep
     
     #azure location
-    location="centralus"
+    location="your azure region"
     
     #name of the deployment
-    name="am"
+    name="apim"
     
     #prefix to be used in naming resources
-    workloadName="am"
+    workloadName="up to 8 letters prefix"
     
     #environment, used in naming resources
     environment="dev"
@@ -50,16 +50,16 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
 
      Navigate to the Bicep folder by running the following script from the repo home directory
 
-        ```azcli
-          cd reference-implementations/AppGW-IAPIM-Func/bicep
+         ```azcli
+         cd reference-implementations/AppGW-IAPIM-Func/bicep
 
      **Deployment Parameters**
      
       Update **config.yaml** with your variables:
 
-        ```azcli
-         AZURE_LOCATION: 'centralus'
-         RESOURCE_NAME_PREFIX: 'myapim'
+         ```azcli
+         AZURE_LOCATION: 'your azure region'
+         RESOURCE_NAME_PREFIX: 'up to 8 letters prefix'
          ENVIRONMENT_TAG: 'dev'
          CICD_AGENT_TYPE: 'none'
 
