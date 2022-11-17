@@ -86,7 +86,7 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
              "tenantId": "value"
           }
 
-      - In your GitHub repository Settings, create an Actions secreted named "**AZURE_CREDENTIALS**". This is used in the pipeline for **azure/lgoin@1**
+      - In your GitHub repository Settings, create an Action secret named "**AZURE_CREDENTIALS**" and populate it with the json object above. This is used in the pipeline for **azure/lgoin@1**
          ```azcli
            - uses: azure/login@v1
            with:
