@@ -53,8 +53,8 @@ var resourceSuffix = '${workloadName}-${environment}-${location}-001'
 var networkingResourceGroupName = 'rg-networking-${resourceSuffix}'
 var sharedResourceGroupName = 'rg-shared-${resourceSuffix}'
 
-var apimCSVNetName = 'sre-rg-vnet' //'vnet-apim-cs-${workloadName}-${environment}-${location}'
-var vnetResourceGroupName = 'sr_rg'
+var apimCSVNetName = 'jm-spoke-vnet' //'vnet-apim-cs-${workloadName}-${environment}-${location}'
+var vnetResourceGroupName = 'jm-networking-rg'
 
 //var backendResourceGroupName = 'rg-backend-${resourceSuffix}'
 
