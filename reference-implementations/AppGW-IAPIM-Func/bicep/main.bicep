@@ -54,7 +54,7 @@ var networkingResourceGroupName = 'rg-networking-${resourceSuffix}'
 var sharedResourceGroupName = 'rg-shared-${resourceSuffix}'
 
 
-var backendResourceGroupName = 'rg-backend-${resourceSuffix}'
+//var backendResourceGroupName = 'rg-backend-${resourceSuffix}'
 
 var apimResourceGroupName = 'rg-apim-${resourceSuffix}'
 
@@ -68,10 +68,10 @@ resource networkingRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
-resource backendRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: backendResourceGroupName
-  location: location
-}
+// resource backendRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+//   name: backendResourceGroupName
+//   location: location
+// }
 
 resource sharedRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: sharedResourceGroupName
@@ -93,19 +93,19 @@ module networking './networking/networking.bicep' = {
   }
 }
 
-module backend './backend/backend.bicep' = {
-  name: 'backendresources'
-  scope: resourceGroup(backendRG.name)
-  params: {
-    workloadName: workloadName
-    environment: environment
-    location: location    
-    vnetName: networking.outputs.apimCSVNetName
-    vnetRG: networkingRG.name
-    backendSubnetId: networking.outputs.backEndSubnetid
-    privateEndpointSubnetid: networking.outputs.privateEndpointSubnetid
-  }
-}
+// module backend './backend/backend.bicep' = {
+//   name: 'backendresources'
+//   scope: resourceGroup(backendRG.name)
+//   params: {
+//     workloadName: workloadName
+//     environment: environment
+//     location: location    
+//     vnetName: networking.outputs.apimCSVNetName
+//     vnetRG: networkingRG.name
+//     backendSubnetId: networking.outputs.backEndSubnetid
+//     privateEndpointSubnetid: networking.outputs.privateEndpointSubnetid
+//   }
+// }
 
 //var jumpboxSubnetId= networking.outputs.jumpBoxSubnetid
 var CICDAgentSubnetId = networking.outputs.CICDAgentSubnetId

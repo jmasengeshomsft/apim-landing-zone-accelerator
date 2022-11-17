@@ -54,7 +54,6 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
          git clone https://github.com/jmasengeshomsft/apim-landing-zone-accelerator-lite.git
 
 
-
      Navigate to the Bicep folder by running the following script from the repo home directory
 
          
