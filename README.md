@@ -50,11 +50,11 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
   Navigate to the Bicep folder by running the following script from the repo home directory
    
      ```azcli
-       cd reference-implementations/AppGW-IAPIM-Func/bicep
+     cd reference-implementations/AppGW-IAPIM-Func/bicep
    
    Update **config.yaml** with your variables:
    
-     ```azcli
+      ```azcli
       AZURE_LOCATION: 'centralus'
       RESOURCE_NAME_PREFIX: 'myapim'
       ENVIRONMENT_TAG: 'dev'
@@ -69,7 +69,7 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
   - Note the Subscription ID, Tenant ID, Client ID and the Secret values
   - Create a json object that looks like the following
 
-      ```azcli 
+       ```azcli 
        {
           "clientId": "value",
           "clientSecret": "value",
