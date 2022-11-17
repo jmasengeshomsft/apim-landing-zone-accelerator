@@ -76,14 +76,14 @@ resource configurationDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   properties: {}
 }
 
-resource scmDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'scm.azure-api.net'
-  location: 'global'
-  dependsOn: [
-    vnet
-  ]
-  properties: {}
-}
+// resource scmDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+//   name: 'scm.azure-api.net'
+//   location: 'global'
+//   dependsOn: [
+//     vnet
+//   ]
+//   properties: {}
+// }
 
 // A Records
 
@@ -167,21 +167,21 @@ resource configurationRecord 'Microsoft.Network/privateDnsZones/A@2020-06-01' = 
   }
 }
 
-resource scmRecord 'Microsoft.Network/privateDnsZones/A@2020-06-01' = {
-  name: 'scm.azure-api.net/${apimName}'
-  dependsOn: [
-    apim
-    scmDnsZone
-  ]
-  properties: {
-    aRecords: [
-      {
-        ipv4Address: apim.properties.privateIPAddresses[0]
-      }
-    ]
-    ttl: 36000
-  }
-}
+// resource scmRecord 'Microsoft.Network/privateDnsZones/A@2020-06-01' = {
+//   name: 'scm.azure-api.net/${apimName}'
+//   dependsOn: [
+//     apim
+//     scmDnsZone
+//   ]
+//   properties: {
+//     aRecords: [
+//       {
+//         ipv4Address: apim.properties.privateIPAddresses[0]
+//       }
+//     ]
+//     ttl: 36000
+//   }
+// }
 
 // Vnet Links
 
@@ -241,16 +241,16 @@ resource managementVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLin
   }
 }
 
-resource scmVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: 'scm.azure-api.net/gateway-vnet-dns-link'
-  location: 'global'
-  dependsOn: [
-    scmDnsZone
-  ]
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: vnet.id
-    }
-  }
-}
+// resource scmVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+//   name: 'scm.azure-api.net/gateway-vnet-dns-link'
+//   location: 'global'
+//   dependsOn: [
+//     scmDnsZone
+//   ]
+//   properties: {
+//     registrationEnabled: false
+//     virtualNetwork: {
+//       id: vnet.id
+//     }
+//   }
+// }

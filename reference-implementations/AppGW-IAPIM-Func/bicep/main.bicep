@@ -108,7 +108,7 @@ module networking './networking/networking.bicep' = {
 // }
 
 //var jumpboxSubnetId= networking.outputs.jumpBoxSubnetid
-var CICDAgentSubnetId = networking.outputs.CICDAgentSubnetId
+//var CICDAgentSubnetId = networking.outputs.CICDAgentSubnetId
 
 module shared './shared/shared.bicep' = {
   dependsOn: [
@@ -118,7 +118,7 @@ module shared './shared/shared.bicep' = {
   scope: resourceGroup(sharedRG.name)
   params: {
     //accountName: accountName
-    CICDAgentSubnetId: CICDAgentSubnetId
+    CICDAgentSubnetId: ''
     CICDAgentType: CICDAgentType
     environment: environment
     //jumpboxSubnetId: jumpboxSubnetId
