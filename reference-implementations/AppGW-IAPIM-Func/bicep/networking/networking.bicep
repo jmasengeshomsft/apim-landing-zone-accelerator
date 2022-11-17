@@ -39,9 +39,9 @@ param apimCSVNetName string
 // param devOpsNameAddressPrefix string = '10.2.2.0/24'
 // param jumpBoxAddressPrefix string = '10.2.3.0/24'
 // param appGatewayAddressPrefix string = '10.2.4.0/24'
-param privateEndpointAddressPrefix string = '10.2.5.0/24'
-param backEndAddressPrefix string = '10.2.6.0/24'
-param apimAddressPrefix string = '10.2.7.0/24'
+param privateEndpointAddressPrefix string = '10.0.1.0/24'
+param backEndAddressPrefix string = '10.0.2.0/24'
+param apimAddressPrefix string = '10.0.3.0/24'
 param location string
 
 /*
@@ -121,7 +121,7 @@ var subnets = [
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   name: apimCSVNetName
-  //scope: resourceGroup('')
+  //scope: resourceGroup('sre-rg')
 }
 
 // resource privateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = {
@@ -139,6 +139,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
 @batchSize(1)
 resource Subnets 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = [for (sn, index) in subnets: {
   name: sn.name
+  //scope: vnet
   parent: vnet
   properties: sn.properties
 }]
