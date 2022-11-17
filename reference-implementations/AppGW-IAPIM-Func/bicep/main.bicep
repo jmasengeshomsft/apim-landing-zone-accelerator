@@ -53,6 +53,7 @@ var resourceSuffix = '${workloadName}-${environment}-${location}-001'
 var networkingResourceGroupName = 'rg-networking-${resourceSuffix}'
 var sharedResourceGroupName = 'rg-shared-${resourceSuffix}'
 
+var apimCSVNetName = 'vnet-apim-cs-${workloadName}-${environment}-${location}'
 
 //var backendResourceGroupName = 'rg-backend-${resourceSuffix}'
 
@@ -88,6 +89,7 @@ module networking './networking/networking.bicep' = {
   scope: resourceGroup(networkingRG.name)
   params: {
     workloadName: workloadName
+    apimCSVNetName: apimCSVNetName
     deploymentEnvironment: environment
     location: location
   }

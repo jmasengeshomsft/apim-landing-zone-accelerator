@@ -32,8 +32,8 @@ param workloadName string
   'dr'
 ])
 param deploymentEnvironment string
-
-param apimCSVNetNameAddressPrefix string = '10.2.0.0/16'
+param apimCSVNetName string
+//param apimCSVNetNameAddressPrefix string = '10.2.0.0/16'
 
 // param bastionAddressPrefix string = '10.2.1.0/24'
 // param devOpsNameAddressPrefix string = '10.2.2.0/24'
@@ -55,7 +55,7 @@ param functionId string = '123131'
 var owner = 'APIM Const Set'
 
 
-var apimCSVNetName = 'vnet-apim-cs-${workloadName}-${deploymentEnvironment}-${location}'
+//var apimCSVNetName = 'vnet-apim-cs-${workloadName}-${deploymentEnvironment}-${location}'
 
 // var bastionSubnetName = 'AzureBastionSubnet' // Azure Bastion subnet must have AzureBastionSubnet name, not 'snet-bast-${workloadName}-${deploymentEnvironment}-${location}'
 // var devOpsSubnetName = 'snet-devops-${workloadName}-${deploymentEnvironment}-${location}'
@@ -78,100 +78,128 @@ var apimSNNSG = 'nsg-apim-${workloadName}-${deploymentEnvironment}-${location}'
 var publicIPAddressName = 'pip-apimcs-${workloadName}-${deploymentEnvironment}-${location}' // 'publicIp'
 //var publicIPAddressNameBastion = 'pip-bastion-${workloadName}-${deploymentEnvironment}-${location}'
 
-// Resources - VNet - SubNets
-resource vnetApimCs 'Microsoft.Network/virtualNetworks@2021-02-01' = {
-  name: apimCSVNetName
-  location: location
-  tags: {
-    Owner: owner
-    // CostCenter: costCenter
-  }
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        apimCSVNetNameAddressPrefix
-      ]
+// Lookup - VNet - SubNets
+var subnets = [
+  {
+    name: privateEndpointSubnetName
+    properties: {
+      addressPrefix: privateEndpointAddressPrefix
+      networkSecurityGroup: {
+        id: privateEndpointNSG.id
+      }
+      privateEndpointNetworkPolicies: 'Disabled'
     }
-    enableVmProtection: false
-    enableDdosProtection: false
-    subnets: [
-      // {
-      //   name: bastionSubnetName
-      //   properties: {
-      //     addressPrefix: bastionAddressPrefix
-      //     networkSecurityGroup: {
-      //       id: bastionNSG.id
-      //     }
-      //   }
-      // }
-      // {
-      //   name: devOpsSubnetName
-      //   properties: {
-      //     addressPrefix: devOpsNameAddressPrefix
-      //     networkSecurityGroup: {
-      //       id: devOpsNSG.id
-      //     }
-      //   }
-      // }
-      // {
-      //   name: jumpBoxSubnetName
-      //   properties: {
-      //     addressPrefix: jumpBoxAddressPrefix
-      //     networkSecurityGroup: {
-      //       id: jumpBoxNSG.id
-      //     }
-      //   }
-        
-      // }
-      // {
-      //   name: appGatewaySubnetName
-      //   properties: {
-      //     addressPrefix: appGatewayAddressPrefix
-      //     networkSecurityGroup: {
-      //       id: appGatewayNSG.id
-      //     }
-      //   }
-      // }
-      {
-        name: privateEndpointSubnetName
-        properties: {
-          addressPrefix: privateEndpointAddressPrefix
-          networkSecurityGroup: {
-            id: privateEndpointNSG.id
-          }
-          privateEndpointNetworkPolicies: 'Disabled'
-        }
-      }
-      {
-        name: backEndSubnetName
-        properties: {
-          addressPrefix: backEndAddressPrefix
-          delegations: [
-            {
-              name: 'delegation'
-              properties: {
-                serviceName: 'Microsoft.Web/serverfarms'
-              }
-            }
-          ]
-          privateEndpointNetworkPolicies: 'Enabled'
-          networkSecurityGroup: {
-            id: backEndNSG.id
-          }
-        }
-      }
-      {
-        name: apimSubnetName
-        properties: {
-          addressPrefix: apimAddressPrefix
-          networkSecurityGroup: {
-            id: apimNSG.id
-          }
-        }
-      }
-    ]
   }
+  {
+    name: backEndSubnetName
+    properties: {
+      addressPrefix: backEndAddressPrefix
+      delegations: [
+        {
+          name: 'delegation'
+          properties: {
+            serviceName: 'Microsoft.Web/serverfarms'
+          }
+        }
+      ]
+      privateEndpointNetworkPolicies: 'Enabled'
+      networkSecurityGroup: {
+        id: backEndNSG.id
+      }
+    }
+  }
+  {
+    name: apimSubnetName
+    properties: {
+      addressPrefix: apimAddressPrefix
+      networkSecurityGroup: {
+        id: apimNSG.id
+      }
+    }
+  }
+]
+
+resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
+  name: apimCSVNetName
+  //scope: resourceGroup('')
 }
+
+// resource privateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = {
+//   name: privateEndpointSubnetName
+//   parent: vnet
+//   properties: {
+//     addressPrefix: privateEndpointAddressPrefix
+//     networkSecurityGroup: {
+//       id: privateEndpointNSG.id
+//     }
+//     privateEndpointNetworkPolicies: 'Disabled'
+//   }
+// }
+
+@batchSize(1)
+resource Subnets 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = [for (sn, index) in subnets: {
+  name: sn.name
+  parent: vnet
+  properties: sn.properties
+}]
+
+
+// resource vnetApimCs 'Microsoft.Network/virtualNetworks@2021-02-01' = {
+//   name: apimCSVNetName
+//   location: location
+//   tags: {
+//     Owner: owner
+//     // CostCenter: costCenter
+//   }
+//   properties: {
+//     addressSpace: {
+//       addressPrefixes: [
+//         apimCSVNetNameAddressPrefix
+//       ]
+//     }
+//     enableVmProtection: false
+//     enableDdosProtection: false
+//     // subnets: [
+//     //   {
+//     //     name: privateEndpointSubnetName
+//     //     properties: {
+//     //       addressPrefix: privateEndpointAddressPrefix
+//     //       networkSecurityGroup: {
+//     //         id: privateEndpointNSG.id
+//     //       }
+//     //       privateEndpointNetworkPolicies: 'Disabled'
+//     //     }
+//     //   }
+//     //   {
+//     //     name: backEndSubnetName
+//     //     properties: {
+//     //       addressPrefix: backEndAddressPrefix
+//     //       delegations: [
+//     //         {
+//     //           name: 'delegation'
+//     //           properties: {
+//     //             serviceName: 'Microsoft.Web/serverfarms'
+//     //           }
+//     //         }
+//     //       ]
+//     //       privateEndpointNetworkPolicies: 'Enabled'
+//     //       networkSecurityGroup: {
+//     //         id: backEndNSG.id
+//     //       }
+//     //     }
+//     //   }
+//     //   {
+//     //     name: apimSubnetName
+//     //     properties: {
+//     //       addressPrefix: apimAddressPrefix
+//     //       networkSecurityGroup: {
+//     //         id: apimNSG.id
+//     //       }
+//     //     }
+//     //   }
+//     // ]
+//   }
+// }
 
 // Network Security Groups (NSG)
 
@@ -517,7 +545,7 @@ resource pip 'Microsoft.Network/publicIPAddresses@2020-07-01' = {
 
 // Output section
 output apimCSVNetName string = apimCSVNetName
-output apimCSVNetId string = vnetApimCs.id
+output apimCSVNetId string = vnet.id
 
 // output bastionSubnetName string = bastionSubnetName  
 // output devOpsSubnetName string = devOpsSubnetName  
@@ -531,8 +559,8 @@ output apimSubnetName string = apimSubnetName
 // output CICDAgentSubnetId string = '${vnetApimCs.id}/subnets/${devOpsSubnetName}'  
 // output jumpBoxSubnetid string = '${vnetApimCs.id}/subnets/${jumpBoxSubnetName}'  
 // output appGatewaySubnetid string = '${vnetApimCs.id}/subnets/${appGatewaySubnetName}'  
-output privateEndpointSubnetid string = '${vnetApimCs.id}/subnets/${privateEndpointSubnetName}'  
-output backEndSubnetid string = '${vnetApimCs.id}/subnets/${backEndSubnetName}'  
-output apimSubnetid string = '${vnetApimCs.id}/subnets/${apimSubnetName}'  
+output privateEndpointSubnetid string = '${vnet.id}/subnets/${privateEndpointSubnetName}'  
+output backEndSubnetid string = '${vnet.id}/subnets/${backEndSubnetName}'  
+output apimSubnetid string = '${vnet.id}/subnets/${apimSubnetName}'  
 
 output publicIp string = pip.id
