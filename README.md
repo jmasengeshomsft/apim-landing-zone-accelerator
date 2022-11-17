@@ -49,7 +49,7 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
    To deploy resources in an Azure Subscription, we will use the pipeline under .github/workflows/es-apim.yaml
 
          
-         #clone the repository
+         #clone or fork the repository
          git clone https://github.com/jmasengeshomsft/apim-landing-zone-accelerator-lite.git
 
 
