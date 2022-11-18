@@ -16,7 +16,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-01-02-previ
   name: clusterName
   location: location
   identity: {
-    type: 'UserAssigned'
+    type: 'SystemAssigned'
     // userAssignedIdentities: identity
   }
   properties: {
