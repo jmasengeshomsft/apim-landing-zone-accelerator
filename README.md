@@ -17,6 +17,10 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
 - A private link was added to the key vault to disable public acess. Thats why we maintained the Private Link subnet
 - The networking resource group that was previously created will be remove. Resources will be created in the vnet's resource group
 - An option to deploy a private aks into the backed resource group
+- If you enable optional AKS backend, you deployment will look like this: 
+
+    ![image](https://user-images.githubusercontent.com/86074746/202822066-2d0adc47-fc8b-4870-b1c8-611998fed8ac.png)
+
 
 ## Current limitations
 
