@@ -36,7 +36,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-01-02-previ
         availabilityZones: null
         mode: 'System'
         enableEncryptionAtHost: true
-       // count: 3
+        count: 2
         minCount: 1
         maxCount: 3
         vmSize: 'Standard_DS2_v2'
