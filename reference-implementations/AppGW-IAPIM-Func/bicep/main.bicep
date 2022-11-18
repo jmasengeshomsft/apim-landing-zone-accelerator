@@ -67,10 +67,10 @@ var apimName = 'apim-${resourceSuffix}'
 //var appGatewayName = 'appgw-${resourceSuffix}'
 
 
-resource networkingRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: networkingResourceGroupName
-  location: location
-}
+// resource networkingRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+//   name: networkingResourceGroupName
+//   location: location
+// }
 
 resource backendRG 'Microsoft.Resources/resourceGroups@2021-04-01' = if (deployAks == true) {
   name: backendResourceGroupName
