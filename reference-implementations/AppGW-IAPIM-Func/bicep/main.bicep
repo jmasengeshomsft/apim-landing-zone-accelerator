@@ -14,47 +14,31 @@ param workloadName string
 ])
 param environment string
 
-// @description('The user name to be used as the Administrator for all VMs created by this deployment')
-// param vmUsername string
-
-// @description('The password for the Administrator user for all VMs created by this deployment')
-// @secure()
-// param vmPassword string
-
 @description('The CI/CD platform to be used, and for which an agent will be configured for the ASE deployment. Specify \'none\' if no agent needed')
 @allowed([
   'github'
   'azuredevops'
   'none'
 ])
-param CICDAgentType string
+param CICDAgentType string = 'none'
 
-// @description('The Azure DevOps or GitHub account name to be used when configuring the CI/CD agent, in the format https://dev.azure.com/ORGNAME OR github.com/ORGUSERNAME OR none')
-// param accountName string
+@description('A flag to indicate whether to deploy AKS in the backend resource group. Defaults to false.')
+param deployAks bool = false
 
-// @description('The Azure DevOps or GitHub personal access token (PAT) used to setup the CI/CD agent')
-// @secure()
-// param personalAccessToken string
-
-// @description('The FQDN for the Application Gateway. Example - api.contoso.com.')
-// param appGatewayFqdn string
-
-// @description('The password for the TLS certificate for the Application Gateway.  The pfx file needs to be copied to deployment/bicep/gateway/certs/appgw.pfx')
-// @secure()
-// param certificatePassword string
-
-// @description('Set to selfsigned if self signed certificates should be used for the Application Gateway. Set to custom and copy the pfx file to deployment/bicep/gateway/certs/appgw.pfx if custom certificates are to be used')
-// param appGatewayCertType string
-
- param location string = deployment().location
+param vnetName string 
+param vnetResourceGroupName string
+param location string = deployment().location
 
 // Variables
 var resourceSuffix = '${workloadName}-${environment}-${location}-001'
-var networkingResourceGroupName = 'rg-networking-${resourceSuffix}'
+//var networkingResourceGroupName = 'rg-networking-${resourceSuffix}'
 var sharedResourceGroupName = 'rg-shared-${resourceSuffix}'
 
+//var apimCSVNetName = 'jm-hub-vnet' //'vnet-apim-cs-${workloadName}-${environment}-${location}'
+var aksClusterName = 'aks-${workloadName}-${location}-001' //'aks-${workloadName}-${environment}-${location}'
+//var vnetResourceGroupName = 'jm-networking-rg'
 
-//var backendResourceGroupName = 'rg-backend-${resourceSuffix}'
+var backendResourceGroupName = 'rg-backend-${resourceSuffix}'
 
 var apimResourceGroupName = 'rg-apim-${resourceSuffix}'
 
@@ -63,15 +47,15 @@ var apimName = 'apim-${resourceSuffix}'
 //var appGatewayName = 'appgw-${resourceSuffix}'
 
 
-resource networkingRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: networkingResourceGroupName
-  location: location
-}
-
-// resource backendRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-//   name: backendResourceGroupName
+// resource networkingRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+//   name: networkingResourceGroupName
 //   location: location
 // }
+
+resource backendRG 'Microsoft.Resources/resourceGroups@2021-04-01' = if (deployAks == true) {
+  name: backendResourceGroupName
+  location: location
+}
 
 resource sharedRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: sharedResourceGroupName
@@ -85,9 +69,10 @@ resource apimRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 module networking './networking/networking.bicep' = {
   name: 'networkingresources'
-  scope: resourceGroup(networkingRG.name)
+  scope: resourceGroup(vnetResourceGroupName)
   params: {
     workloadName: workloadName
+    apimCSVNetName: vnetName
     deploymentEnvironment: environment
     location: location
   }
@@ -108,7 +93,7 @@ module networking './networking/networking.bicep' = {
 // }
 
 //var jumpboxSubnetId= networking.outputs.jumpBoxSubnetid
-var CICDAgentSubnetId = networking.outputs.CICDAgentSubnetId
+//var CICDAgentSubnetId = networking.outputs.privateEndpointSubnetid
 
 module shared './shared/shared.bicep' = {
   dependsOn: [
@@ -118,7 +103,8 @@ module shared './shared/shared.bicep' = {
   scope: resourceGroup(sharedRG.name)
   params: {
     //accountName: accountName
-    CICDAgentSubnetId: CICDAgentSubnetId
+    CICDAgentSubnetId: ''
+    PrivateLinkSubnetId: networking.outputs.privateEndpointSubnetid
     CICDAgentType: CICDAgentType
     environment: environment
     //jumpboxSubnetId: jumpboxSubnetId
@@ -153,28 +139,22 @@ module dnsZoneModule 'shared/dnszone.bicep'  = {
   ]
   params: {
     vnetName: networking.outputs.apimCSVNetName
-    vnetRG: networkingRG.name
+    vnetRG: vnetResourceGroupName
     apimName: apimName
     apimRG: apimRG.name
+    keyVaultName: shared.outputs.keyVaultName
   }
 }
 
-// module appgwModule 'gateway/appgw.bicep' = {
-//   name: 'appgwDeploy'
-//   scope: resourceGroup(apimRG.name)
-//   dependsOn: [
-//     apimModule
-//     dnsZoneModule
-//   ]
-//   params: {
-//     appGatewayName:                 appGatewayName
-//     appGatewayFQDN:                 appGatewayFqdn
-//     location:                       location
-//     appGatewaySubnetId:             networking.outputs.appGatewaySubnetid
-//     primaryBackendEndFQDN:          '${apimName}.azure-api.net'
-//     keyVaultName:                   shared.outputs.keyVaultName
-//     keyVaultResourceGroupName:      sharedRG.name
-//     appGatewayCertType:             appGatewayCertType
-//     certPassword:                   certificatePassword
-//   }
-// }
+//deploy Private AKS in the Backend RG if the user chooses to deploy AKS
+module aksModule 'private-aks/privateaks.bicep' = if (deployAks == true) {
+  name: 'aksDeploy'
+  scope: resourceGroup(backendRG.name)
+  params: {
+    clusterName: aksClusterName
+    location: location
+    logworkspaceid: shared.outputs.logAnalyticsWorkspaceId
+    subnetId: networking.outputs.backEndSubnetid
+    networkPlugin: 'kubenet'
+  }
+}

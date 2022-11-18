@@ -9,6 +9,9 @@ param location string
 @description('The full id string identifying the target subnet for the CI/CD Agent VM')
 param CICDAgentSubnetId string
 
+@description('The full id string identifying the target subnet for the CI/CD Agent VM')
+param PrivateLinkSubnetId string
+
 @description('The user name to be used as the Administrator for all VMs created by this deployment')
 param vmUsername string = ''
 
@@ -89,7 +92,7 @@ module vm_devopswinvm './createvmwindows.bicep' = if (toLower(CICDAgentType)!='n
 //   }
 // }
 
-resource key_vault 'Microsoft.KeyVault/vaults@2019-09-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -100,35 +103,60 @@ resource key_vault 'Microsoft.KeyVault/vaults@2019-09-01' = {
     }
     // enablePurgeProtection: false
     enableRbacAuthorization: true   
-    accessPolicies: [
-      // {
-      //   tenantId: 'string'
-      //   objectId: 'string'
-      //   applicationId: 'string'
-      //   permissions: {
-      //     keys: [
-      //       'string'
-      //     ]
-      //     secrets: [
-      //       'string'
-      //     ]
-      //     certificates: [
-      //       'string'
-      //     ]
-      //     storage: [
-      //       'string'git 
-      //     ]
-      //   }
-      // }
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
+ }
+}
+
+resource keyVaultDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'privatelink.vaultcore.azure.net'
+  location: 'global'
+  properties: {}
+}
+
+resource kvPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    subnet: {
+      id: PrivateLinkSubnetId
+    }
+    privateLinkServiceConnections: [
+      {
+        name: keyVaultName
+        properties: {
+          privateLinkServiceId: keyVault.id
+          groupIds: [
+            'vault'
+          ]
+        }
+      }
     ]
   }
 }
 
+// resource privateEndpointDns 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = {
+//   name: '${kvPrivateEndpoint.name}/vault-PrivateDnsZoneGroup'
+//   properties:{
+//     privateDnsZoneConfigs: [
+//       {
+//         name: 'privatelink.vaultcore.azure.net'
+//         properties:{
+//           privateDnsZoneId: keyVaultDnsZone.id
+//         }
+//       }
+//     ]
+//   }
+// }
+
 // Outputs
 output appInsightsConnectionString string = appInsights.outputs.appInsightsConnectionString
+output logAnalyticsWorkspaceId string = appInsights.outputs.logAnalyticsWorkspaceId
 output CICDAgentVmName string = vm_devopswinvm.name
 // output jumpBoxvmName string = vm_jumpboxwinvm.name
 output appInsightsName string=appInsights.outputs.appInsightsName
 output appInsightsId string=appInsights.outputs.appInsightsId
 output appInsightsInstrumentationKey string=appInsights.outputs.appInsightsInstrumentationKey
-output keyVaultName string = key_vault.name
+output keyVaultName string = keyVault.name

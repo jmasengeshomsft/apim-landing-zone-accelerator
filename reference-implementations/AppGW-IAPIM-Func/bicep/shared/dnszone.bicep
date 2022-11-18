@@ -3,6 +3,8 @@ param vnetName                  string
 param vnetRG                    string
 param apimName                  string
 param apimRG                    string
+param keyVaultName              string
+//param keyVaultRG                string
 
 /*
  Retrieve APIM and Virtual Network
@@ -18,6 +20,10 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   scope: resourceGroup(vnetRG)
 }
 
+// resource keyVault 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
+//   name: keyVaultName
+//   scope: resourceGroup(vnetRG)
+// }
 /*
 Createa a Private DNS ZOne, A Record and Vnet Link for each of the below endpoints
 
@@ -76,14 +82,26 @@ resource configurationDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   properties: {}
 }
 
-resource scmDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'scm.azure-api.net'
+resource keyVaultDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'privatelink.vaultcore.azure.net'
   location: 'global'
   dependsOn: [
     vnet
   ]
   properties: {}
 }
+
+
+
+
+// resource scmDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+//   name: 'scm.azure-api.net'
+//   location: 'global'
+//   dependsOn: [
+//     vnet
+//   ]
+//   properties: {}
+// }
 
 // A Records
 
@@ -167,21 +185,36 @@ resource configurationRecord 'Microsoft.Network/privateDnsZones/A@2020-06-01' = 
   }
 }
 
-resource scmRecord 'Microsoft.Network/privateDnsZones/A@2020-06-01' = {
-  name: 'scm.azure-api.net/${apimName}'
-  dependsOn: [
-    apim
-    scmDnsZone
-  ]
-  properties: {
-    aRecords: [
+resource privateEndpointDns 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = {
+  name: '${keyVaultName}/vault-PrivateDnsZoneGroup'
+  properties:{
+    privateDnsZoneConfigs: [
       {
-        ipv4Address: apim.properties.privateIPAddresses[0]
+        name: keyVaultDnsZone.name
+        properties:{
+          privateDnsZoneId: keyVaultDnsZone.id
+        }
       }
     ]
-    ttl: 36000
   }
 }
+
+
+// resource scmRecord 'Microsoft.Network/privateDnsZones/A@2020-06-01' = {
+//   name: 'scm.azure-api.net/${apimName}'
+//   dependsOn: [
+//     apim
+//     scmDnsZone
+//   ]
+//   properties: {
+//     aRecords: [
+//       {
+//         ipv4Address: apim.properties.privateIPAddresses[0]
+//       }
+//     ]
+//     ttl: 36000
+//   }
+// }
 
 // Vnet Links
 
@@ -241,11 +274,11 @@ resource managementVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLin
   }
 }
 
-resource scmVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: 'scm.azure-api.net/gateway-vnet-dns-link'
+resource keyVaultVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  name: 'privatelink.vaultcore.azure.net/kv-vnet-dns-link'
   location: 'global'
   dependsOn: [
-    scmDnsZone
+    keyVaultDnsZone
   ]
   properties: {
     registrationEnabled: false
@@ -254,3 +287,17 @@ resource scmVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020
     }
   }
 }
+
+// resource scmVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+//   name: 'scm.azure-api.net/gateway-vnet-dns-link'
+//   location: 'global'
+//   dependsOn: [
+//     scmDnsZone
+//   ]
+//   properties: {
+//     registrationEnabled: false
+//     virtualNetwork: {
+//       id: vnet.id
+//     }
+//   }
+// }
