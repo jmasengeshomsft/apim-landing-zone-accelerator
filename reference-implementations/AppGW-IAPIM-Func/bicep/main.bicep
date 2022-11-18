@@ -53,7 +53,8 @@ var resourceSuffix = '${workloadName}-${environment}-${location}-001'
 var networkingResourceGroupName = 'rg-networking-${resourceSuffix}'
 var sharedResourceGroupName = 'rg-shared-${resourceSuffix}'
 
-var apimCSVNetName = 'vnet-apim-cs-${workloadName}-${environment}-${location}'
+var apimCSVNetName = 'jm-hub-vnet' //'vnet-apim-cs-${workloadName}-${environment}-${location}'
+var vnetResourceGroupName = 'jm-networking-rg'
 
 //var backendResourceGroupName = 'rg-backend-${resourceSuffix}'
 
@@ -86,7 +87,7 @@ resource apimRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 module networking './networking/networking.bicep' = {
   name: 'networkingresources'
-  scope: resourceGroup(networkingRG.name)
+  scope: resourceGroup(vnetResourceGroupName)
   params: {
     workloadName: workloadName
     apimCSVNetName: apimCSVNetName
@@ -155,7 +156,7 @@ module dnsZoneModule 'shared/dnszone.bicep'  = {
   ]
   params: {
     vnetName: networking.outputs.apimCSVNetName
-    vnetRG: networkingRG.name
+    vnetRG: vnetResourceGroupName
     apimName: apimName
     apimRG: apimRG.name
   }

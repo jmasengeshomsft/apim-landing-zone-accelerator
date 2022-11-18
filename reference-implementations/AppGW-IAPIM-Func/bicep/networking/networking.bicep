@@ -39,9 +39,9 @@ param apimCSVNetName string
 // param devOpsNameAddressPrefix string = '10.2.2.0/24'
 // param jumpBoxAddressPrefix string = '10.2.3.0/24'
 // param appGatewayAddressPrefix string = '10.2.4.0/24'
-param privateEndpointAddressPrefix string = '10.2.5.0/24'
-param backEndAddressPrefix string = '10.2.6.0/24'
-param apimAddressPrefix string = '10.2.7.0/24'
+param privateEndpointAddressPrefix string = '10.0.7.0/24'
+param backEndAddressPrefix string = '10.0.6.0/24'
+param apimAddressPrefix string = '10.0.5.0/24'
 param location string
 
 /*
@@ -79,49 +79,49 @@ var publicIPAddressName = 'pip-apimcs-${workloadName}-${deploymentEnvironment}-$
 //var publicIPAddressNameBastion = 'pip-bastion-${workloadName}-${deploymentEnvironment}-${location}'
 
 // Lookup - VNet - SubNets
-var subnets = [
-  {
-    name: privateEndpointSubnetName
-    properties: {
-      addressPrefix: privateEndpointAddressPrefix
-      networkSecurityGroup: {
-        id: privateEndpointNSG.id
-      }
-      privateEndpointNetworkPolicies: 'Disabled'
-    }
-  }
-  {
-    name: backEndSubnetName
-    properties: {
-      addressPrefix: backEndAddressPrefix
-      delegations: [
-        {
-          name: 'delegation'
-          properties: {
-            serviceName: 'Microsoft.Web/serverfarms'
-          }
-        }
-      ]
-      privateEndpointNetworkPolicies: 'Enabled'
-      networkSecurityGroup: {
-        id: backEndNSG.id
-      }
-    }
-  }
-  {
-    name: apimSubnetName
-    properties: {
-      addressPrefix: apimAddressPrefix
-      networkSecurityGroup: {
-        id: apimNSG.id
-      }
-    }
-  }
-]
+// var subnets = [
+//   {
+//     name: privateEndpointSubnetName
+//     properties: {
+//       addressPrefix: privateEndpointAddressPrefix
+//       networkSecurityGroup: {
+//         //id: privateEndpointNSG.id
+//       }
+//       privateEndpointNetworkPolicies: 'Disabled'
+//     }
+//   }
+//   {
+//     name: backEndSubnetName
+//     properties: {
+//       addressPrefix: backEndAddressPrefix
+//       delegations: [
+//         {
+//           name: 'delegation'
+//           properties: {
+//             serviceName: 'Microsoft.Web/serverfarms'
+//           }
+//         }
+//       ]
+//       privateEndpointNetworkPolicies: 'Enabled'
+//       networkSecurityGroup: {
+//         //id: backEndNSG.id
+//       }
+//     }
+//   }
+//   {
+//     name: apimSubnetName
+//     properties: {
+//       addressPrefix: apimAddressPrefix
+//       networkSecurityGroup: {
+//        // id: apimNSG.id
+//       }
+//     }
+//   }
+// ]
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   name: apimCSVNetName
-  //scope: resourceGroup('')
+  //scope: resourceGroup('sre-rg')
 }
 
 // resource privateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = {
@@ -136,13 +136,67 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
 //   }
 // }
 
-@batchSize(1)
-resource Subnets 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = [for (sn, index) in subnets: {
-  name: sn.name
-  parent: vnet
-  properties: sn.properties
-}]
+// @batchSize(1)
+// resource Subnets 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = [for (sn, index) in subnets: {
+//   name: sn.name
+//   //scope: vnet
+//   parent: vnet
+//   properties: sn.properties
+// }]
 
+resource privateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
+  dependsOn: [
+    apimSubnet
+  ]
+  name: privateEndpointSubnetName
+  //scope: vnet
+  parent: vnet
+  properties: {
+    addressPrefix: privateEndpointAddressPrefix
+    networkSecurityGroup: {
+      id: privateEndpointNSG.id
+    }
+    privateEndpointNetworkPolicies: 'Disabled'
+  }
+}
+
+resource apimSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
+  name: apimSubnetName
+  //scope: vnet
+  parent: vnet
+  properties: {
+    addressPrefix: apimAddressPrefix
+    networkSecurityGroup: {
+      id: apimNSG.id
+    }
+  }
+}
+
+
+resource backEndSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
+  dependsOn: [
+    privateEndpointSubnet
+    apimSubnet
+  ]
+  name: backEndSubnetName
+  //scope: vnet
+  parent: vnet
+  properties: {
+    addressPrefix: backEndAddressPrefix
+    delegations: [
+      {
+        name: 'delegation'
+        properties: {
+          serviceName: 'Microsoft.Web/serverfarms'
+        }
+      }
+    ]
+    privateEndpointNetworkPolicies: 'Enabled'
+    networkSecurityGroup: {
+      id: backEndNSG.id
+    }
+  }
+}
 
 // resource vnetApimCs 'Microsoft.Network/virtualNetworks@2021-02-01' = {
 //   name: apimCSVNetName
