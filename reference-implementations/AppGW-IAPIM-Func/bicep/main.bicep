@@ -14,44 +14,24 @@ param workloadName string
 ])
 param environment string
 
-// @description('The user name to be used as the Administrator for all VMs created by this deployment')
-// param vmUsername string
-
-// @description('The password for the Administrator user for all VMs created by this deployment')
-// @secure()
-// param vmPassword string
-
 @description('The CI/CD platform to be used, and for which an agent will be configured for the ASE deployment. Specify \'none\' if no agent needed')
 @allowed([
   'github'
   'azuredevops'
   'none'
 ])
-param CICDAgentType string
+param CICDAgentType string = 'none'
 
 @description('A flag to indicate whether to deploy AKS in the backend resource group. Defaults to false.')
 param deployAks bool = false
 
-// @description('The Azure DevOps or GitHub personal access token (PAT) used to setup the CI/CD agent')
-// @secure()
-// param personalAccessToken string
-
-// @description('The FQDN for the Application Gateway. Example - api.contoso.com.')
-// param appGatewayFqdn string
-
-// @description('The password for the TLS certificate for the Application Gateway.  The pfx file needs to be copied to deployment/bicep/gateway/certs/appgw.pfx')
-// @secure()
-// param certificatePassword string
-
-// @description('Set to selfsigned if self signed certificates should be used for the Application Gateway. Set to custom and copy the pfx file to deployment/bicep/gateway/certs/appgw.pfx if custom certificates are to be used')
-// param appGatewayCertType string
 param vnetName string 
 param vnetResourceGroupName string
 param location string = deployment().location
 
 // Variables
 var resourceSuffix = '${workloadName}-${environment}-${location}-001'
-var networkingResourceGroupName = 'rg-networking-${resourceSuffix}'
+//var networkingResourceGroupName = 'rg-networking-${resourceSuffix}'
 var sharedResourceGroupName = 'rg-shared-${resourceSuffix}'
 
 //var apimCSVNetName = 'jm-hub-vnet' //'vnet-apim-cs-${workloadName}-${environment}-${location}'
