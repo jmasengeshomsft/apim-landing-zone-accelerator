@@ -48,14 +48,14 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
     location="your azure region"
     
     #name of the existing vnet
-    vnetName="inyarwanda-dev-vnet"
+    vnetName="your vnet"
 
     #name of the resource group for the vnet
-    vnetResourceGroupName="inyarwanda-dev"
+    vnetResourceGroupName="your vnet rg"
 
     
     #name of the deployment
-    name="apim"
+    name="your bicep deployment name - 4 letters"
     
     #prefix to be used in naming resources
     workloadName="up to 8 letters prefix"
@@ -64,7 +64,7 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
     environment="dev"
     
     #whether to deploy a private aks as a backend service
-    deployAks = true
+    deployAks=true
     
     # run the bicep deploy commant at the subscription level 
     az deployment sub create --location $location --name $name --template-file main.bicep --parameters workloadName=$workloadName   vnetName=$vnetName vnetResourceGroupName=$vnetResourceGroupName  environment=$environment deployAks=$deployAks CICDAgentType=none
