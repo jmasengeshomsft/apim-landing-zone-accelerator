@@ -54,7 +54,7 @@ var networkingResourceGroupName = 'rg-networking-${resourceSuffix}'
 var sharedResourceGroupName = 'rg-shared-${resourceSuffix}'
 
 var apimCSVNetName = 'jm-hub-vnet' //'vnet-apim-cs-${workloadName}-${environment}-${location}'
-var aksClusterName = 'aks-${resourceSuffix}' //'aks-${workloadName}-${environment}-${location}'
+var aksClusterName = 'aks-${workloadName}-${location}-001' //'aks-${workloadName}-${environment}-${location}'
 var vnetResourceGroupName = 'jm-networking-rg'
 
 var backendResourceGroupName = 'rg-backend-${resourceSuffix}'
