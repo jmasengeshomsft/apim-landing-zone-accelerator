@@ -137,19 +137,19 @@ resource kvPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
   }
 }
 
-resource privateEndpointDns 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = {
-  name: '${kvPrivateEndpoint.name}/vault-PrivateDnsZoneGroup'
-  properties:{
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink.vaultcore.azure.net'
-        properties:{
-          privateDnsZoneId: keyVaultDnsZone.id
-        }
-      }
-    ]
-  }
-}
+// resource privateEndpointDns 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = {
+//   name: '${kvPrivateEndpoint.name}/vault-PrivateDnsZoneGroup'
+//   properties:{
+//     privateDnsZoneConfigs: [
+//       {
+//         name: 'privatelink.vaultcore.azure.net'
+//         properties:{
+//           privateDnsZoneId: keyVaultDnsZone.id
+//         }
+//       }
+//     ]
+//   }
+// }
 
 // Outputs
 output appInsightsConnectionString string = appInsights.outputs.appInsightsConnectionString
