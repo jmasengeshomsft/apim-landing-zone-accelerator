@@ -29,8 +29,8 @@ param environment string
 ])
 param CICDAgentType string
 
-// @description('The Azure DevOps or GitHub account name to be used when configuring the CI/CD agent, in the format https://dev.azure.com/ORGNAME OR github.com/ORGUSERNAME OR none')
-// param accountName string
+@description('A flag to indicate whether to deploy AKS in the backend resource group. Defaults to false.')
+param deployAks bool = false
 
 // @description('The Azure DevOps or GitHub personal access token (PAT) used to setup the CI/CD agent')
 // @secure()
@@ -46,7 +46,7 @@ param CICDAgentType string
 // @description('Set to selfsigned if self signed certificates should be used for the Application Gateway. Set to custom and copy the pfx file to deployment/bicep/gateway/certs/appgw.pfx if custom certificates are to be used')
 // param appGatewayCertType string
 
- param location string = deployment().location
+param location string = deployment().location
 
 // Variables
 var resourceSuffix = '${workloadName}-${environment}-${location}-001'
@@ -71,7 +71,7 @@ resource networkingRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
-resource backendRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource backendRG 'Microsoft.Resources/resourceGroups@2021-04-01' = if (deployAks == true) {
   name: backendResourceGroupName
   location: location
 }
@@ -165,16 +165,10 @@ module dnsZoneModule 'shared/dnszone.bicep'  = {
 }
 
 //deploy Private AKS in the Backend RG if the user chooses to deploy AKS
-module aksModule 'private-aks/privateaks.bicep'  = {
+module aksModule 'private-aks/privateaks.bicep' = if (deployAks == true) {
   name: 'aksDeploy'
   scope: resourceGroup(backendRG.name)
   params: {
-    // apimName: apimName
-    // apimSubnetId: networking.outputs.apimSubnetid
-    // location: location
-    // appInsightsName: shared.outputs.appInsightsName
-    // appInsightsId: shared.outputs.appInsightsId
-    // appInsightsInstrumentationKey: shared.outputs.appInsightsInstrumentationKey
     clusterName: aksClusterName
     location: location
     logworkspaceid: shared.outputs.logAnalyticsWorkspaceId
