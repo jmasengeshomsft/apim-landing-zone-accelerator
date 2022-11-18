@@ -103,33 +103,17 @@ resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
     }
     // enablePurgeProtection: false
     enableRbacAuthorization: true   
-    accessPolicies: [
-      // {
-      //   tenantId: 'string'
-      //   objectId: 'string'
-      //   applicationId: 'string'
-      //   permissions: {
-      //     keys: [
-      //       'string'
-      //     ]
-      //     secrets: [
-      //       'string'
-      //     ]
-      //     certificates: [
-      //       'string'
-      //     ]
-      //     storage: [
-      //       'string'git 
-      //     ]
-      //   }
-      // }
-    ]
-  }
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
+ }
 }
 
-resource privateDnsZoneName 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
+resource keyVaultDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: 'privatelink.vaultcore.azure.net'
-  scope: resourceGroup('jm-networking-rg')
+  location: 'global'
+  properties: {}
 }
 
 resource kvPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
@@ -160,7 +144,7 @@ resource privateEndpointDns 'Microsoft.Network/privateEndpoints/privateDnsZoneGr
       {
         name: 'privatelink.vaultcore.azure.net'
         properties:{
-          privateDnsZoneId: privateDnsZoneName.id
+          privateDnsZoneId: keyVaultDnsZone.id
         }
       }
     ]

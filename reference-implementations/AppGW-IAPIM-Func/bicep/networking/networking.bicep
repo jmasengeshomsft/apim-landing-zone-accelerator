@@ -41,7 +41,7 @@ param apimCSVNetName string
 // param appGatewayAddressPrefix string = '10.2.4.0/24'
 param privateEndpointAddressPrefix string = '10.0.7.0/24'
 param backEndAddressPrefix string = '10.0.6.0/24'
-param apimAddressPrefix string = '10.0.5.0/24'
+param apimAddressPrefix string = '10.0.3.0/24'
 param location string
 
 /*

@@ -45,7 +45,8 @@ param deployAks bool = false
 
 // @description('Set to selfsigned if self signed certificates should be used for the Application Gateway. Set to custom and copy the pfx file to deployment/bicep/gateway/certs/appgw.pfx if custom certificates are to be used')
 // param appGatewayCertType string
-
+param vnetName string 
+param vnetResourceGroupName string
 param location string = deployment().location
 
 // Variables
@@ -53,9 +54,9 @@ var resourceSuffix = '${workloadName}-${environment}-${location}-001'
 var networkingResourceGroupName = 'rg-networking-${resourceSuffix}'
 var sharedResourceGroupName = 'rg-shared-${resourceSuffix}'
 
-var apimCSVNetName = 'jm-hub-vnet' //'vnet-apim-cs-${workloadName}-${environment}-${location}'
+//var apimCSVNetName = 'jm-hub-vnet' //'vnet-apim-cs-${workloadName}-${environment}-${location}'
 var aksClusterName = 'aks-${workloadName}-${location}-001' //'aks-${workloadName}-${environment}-${location}'
-var vnetResourceGroupName = 'jm-networking-rg'
+//var vnetResourceGroupName = 'jm-networking-rg'
 
 var backendResourceGroupName = 'rg-backend-${resourceSuffix}'
 
@@ -91,7 +92,7 @@ module networking './networking/networking.bicep' = {
   scope: resourceGroup(vnetResourceGroupName)
   params: {
     workloadName: workloadName
-    apimCSVNetName: apimCSVNetName
+    apimCSVNetName: vnetName
     deploymentEnvironment: environment
     location: location
   }
