@@ -54,9 +54,10 @@ var networkingResourceGroupName = 'rg-networking-${resourceSuffix}'
 var sharedResourceGroupName = 'rg-shared-${resourceSuffix}'
 
 var apimCSVNetName = 'jm-hub-vnet' //'vnet-apim-cs-${workloadName}-${environment}-${location}'
+var aksClusterName = 'aks-${resourceSuffix}' //'aks-${workloadName}-${environment}-${location}'
 var vnetResourceGroupName = 'jm-networking-rg'
 
-//var backendResourceGroupName = 'rg-backend-${resourceSuffix}'
+var backendResourceGroupName = 'rg-backend-${resourceSuffix}'
 
 var apimResourceGroupName = 'rg-apim-${resourceSuffix}'
 
@@ -70,10 +71,10 @@ resource networkingRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
-// resource backendRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-//   name: backendResourceGroupName
-//   location: location
-// }
+resource backendRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: backendResourceGroupName
+  location: location
+}
 
 resource sharedRG 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: sharedResourceGroupName
@@ -163,22 +164,21 @@ module dnsZoneModule 'shared/dnszone.bicep'  = {
   }
 }
 
-// module appgwModule 'gateway/appgw.bicep' = {
-//   name: 'appgwDeploy'
-//   scope: resourceGroup(apimRG.name)
-//   dependsOn: [
-//     apimModule
-//     dnsZoneModule
-//   ]
-//   params: {
-//     appGatewayName:                 appGatewayName
-//     appGatewayFQDN:                 appGatewayFqdn
-//     location:                       location
-//     appGatewaySubnetId:             networking.outputs.appGatewaySubnetid
-//     primaryBackendEndFQDN:          '${apimName}.azure-api.net'
-//     keyVaultName:                   shared.outputs.keyVaultName
-//     keyVaultResourceGroupName:      sharedRG.name
-//     appGatewayCertType:             appGatewayCertType
-//     certPassword:                   certificatePassword
-//   }
-// }
+//deploy Private AKS in the Backend RG if the user chooses to deploy AKS
+module aksModule 'private-aks/privateaks.bicep'  = {
+  name: 'aksDeploy'
+  scope: resourceGroup(backendRG.name)
+  params: {
+    // apimName: apimName
+    // apimSubnetId: networking.outputs.apimSubnetid
+    // location: location
+    // appInsightsName: shared.outputs.appInsightsName
+    // appInsightsId: shared.outputs.appInsightsId
+    // appInsightsInstrumentationKey: shared.outputs.appInsightsInstrumentationKey
+    clusterName: aksClusterName
+    location: location
+    logworkspaceid: shared.outputs.logAnalyticsWorkspaceId
+    subnetId: networking.outputs.backEndSubnetid
+    networkPlugin: 'kubenet'
+  }
+}

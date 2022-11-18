@@ -169,6 +169,7 @@ resource privateEndpointDns 'Microsoft.Network/privateEndpoints/privateDnsZoneGr
 
 // Outputs
 output appInsightsConnectionString string = appInsights.outputs.appInsightsConnectionString
+output logAnalyticsWorkspaceId string = appInsights.outputs.logAnalyticsWorkspaceId
 output CICDAgentVmName string = vm_devopswinvm.name
 // output jumpBoxvmName string = vm_jumpboxwinvm.name
 output appInsightsName string=appInsights.outputs.appInsightsName
