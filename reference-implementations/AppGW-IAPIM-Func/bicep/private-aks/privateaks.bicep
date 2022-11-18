@@ -33,14 +33,14 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-01-02-previ
       {
         enableAutoScaling: true
         name: 'defaultpool'
-        availabilityZones: null
+        availabilityZones: ['1', '2', '3']
         mode: 'System'
-        enableEncryptionAtHost: true
+        enableEncryptionAtHost: false
         count: 2
         minCount: 1
         maxCount: 3
         vmSize: 'Standard_DS2_v2'
-        osDiskSizeGB: 30
+        //osDiskSizeGB: 30
         type: 'VirtualMachineScaleSets'
         vnetSubnetID: subnetId
       }
@@ -59,7 +59,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-01-02-previ
       dockerBridgeCidr: '172.16.1.1/30'
       dnsServiceIP: '192.168.100.10'
       serviceCidr: '192.168.100.0/24'
-      //networkPolicy: 'calico'
+      networkPolicy: 'calico'
       podCidr: '172.17.0.0/16'
     }
     apiServerAccessProfile: {

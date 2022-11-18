@@ -183,14 +183,14 @@ resource backEndSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = 
   parent: vnet
   properties: {
     addressPrefix: backEndAddressPrefix
-    delegations: [
-      {
-        name: 'delegation'
-        properties: {
-          serviceName: 'Microsoft.Web/serverfarms'
-        }
-      }
-    ]
+    // delegations: [
+    //   {
+    //     name: 'delegation'
+    //     properties: {
+    //       serviceName: 'Microsoft.Web/serverfarms'
+    //     }
+    //   }
+    // ]
     privateEndpointNetworkPolicies: 'Enabled'
     networkSecurityGroup: {
       id: backEndNSG.id
