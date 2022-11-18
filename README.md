@@ -1,7 +1,7 @@
 
 # Enterprise-Scale-APIM Lite (Fork)
 
-This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-landing-zone-accelerator). Checkout the original repository for a complete enterprise deployment reference. This fork focuses on demonstrating how to successfully provision an internal APIM instance in an existing dev environment (spoke). 
+This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-landing-zone-accelerator). Checkout the original repository for a complete enterprise deployment reference. This fork focuses on demonstrating how to successfully provision an internal APIM instance in an existing virtual network. An optional AKS backend was added instead of functions.
 
 ## What was ommitted: 
 - Application Gateway
@@ -12,8 +12,12 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
 ## What was added:
 
 - An additional Private DNS Zone **configuration.azure-api.net** to support Self-Hosted Gateways
-- Ability to deploy into an existing Virtual Network (In progress)
-- Ability to specify the size of the Vnet
+- Ability to deploy into an existing Virtual Network. The subnets still needs to be created by the pipeline
+- Ability to specify the size of the Vnet (not started)
+- A private link was added to the key vault to disable public acess. Thats why we maintained the Private Link subnet
+- The networking resource group that was previously created will be remove. Resources will be created in the vnet's resource group
+- An option to deploy a private aks into the backed resource group
+
 
 ## How to deploy in your environment
 
@@ -33,6 +37,13 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
     #azure location
     location="your azure region"
     
+    #name of the existing vnet
+    vnetName="inyarwanda-dev-vnet"
+
+    #name of the resource group for the vnet
+    vnetResourceGroupName="inyarwanda-dev"
+
+    
     #name of the deployment
     name="apim"
     
@@ -42,8 +53,12 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
     #environment, used in naming resources
     environment="dev"
     
+    #whether to deploy a private aks as a backend service
+    deployAks = true
+    
     # run the bicep deploy commant at the subscription level 
-    az deployment sub create --location $location --name $name --template-file main.bicep --parameters workloadName=$workloadName environment=$environment CICDAgentType=none
+    az deployment sub create --location $location --name $name --template-file main.bicep --parameters workloadName=$workloadName   vnetName=$vnetName vnetResourceGroupName=$vnetResourceGroupName  environment=$environment deployAks=$deployAks CICDAgentType=none
+
 
 4. ### Pipeline with GitHub Actions
 
@@ -67,7 +82,9 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
          AZURE_LOCATION: 'your azure region'
          RESOURCE_NAME_PREFIX: 'up to 8 letters prefix'
          ENVIRONMENT_TAG: 'dev'
-         CICD_AGENT_TYPE: 'none'
+         VNET_NAME: 'jm-hub-vnet'
+         VNET_RG: 'jm-networking-rg'
+         DEPLOY_AKS_BACKEND: true
 
      **AZ Login With a Service Principal**
 
