@@ -1,5 +1,5 @@
 AZURE_LOCATION: 'canadacentral'
-RESOURCE_NAME_PREFIX: 'apim'
+RESOURCE_NAME_PREFIX: 'my'
 ENVIRONMENT_TAG: 'dev'
 CICD_AGENT_TYPE: 'none'
 VNET_NAME: 'jm-hub-vnet'
