@@ -3,6 +3,8 @@ param vnetName                  string
 param vnetRG                    string
 param apimName                  string
 param apimRG                    string
+param keyVaultName              string
+//param keyVaultRG                string
 
 /*
  Retrieve APIM and Virtual Network
@@ -18,6 +20,10 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   scope: resourceGroup(vnetRG)
 }
 
+// resource keyVault 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
+//   name: keyVaultName
+//   scope: resourceGroup(vnetRG)
+// }
 /*
 Createa a Private DNS ZOne, A Record and Vnet Link for each of the below endpoints
 
@@ -76,14 +82,17 @@ resource configurationDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   properties: {}
 }
 
-// resource keyVaultDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-//   name: 'privatelink.vaultcore.azure.net'
-//   location: 'global'
-//   dependsOn: [
-//     vnet
-//   ]
-//   properties: {}
-// }
+resource keyVaultDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'privatelink.vaultcore.azure.net'
+  location: 'global'
+  dependsOn: [
+    vnet
+  ]
+  properties: {}
+}
+
+
+
 
 // resource scmDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 //   name: 'scm.azure-api.net'
@@ -176,6 +185,20 @@ resource configurationRecord 'Microsoft.Network/privateDnsZones/A@2020-06-01' = 
   }
 }
 
+resource privateEndpointDns 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = {
+  name: '${keyVaultName}/vault-PrivateDnsZoneGroup'
+  properties:{
+    privateDnsZoneConfigs: [
+      {
+        name: keyVaultDnsZone.name
+        properties:{
+          privateDnsZoneId: keyVaultDnsZone.id
+        }
+      }
+    ]
+  }
+}
+
 
 // resource scmRecord 'Microsoft.Network/privateDnsZones/A@2020-06-01' = {
 //   name: 'scm.azure-api.net/${apimName}'
@@ -242,6 +265,20 @@ resource managementVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLin
   location: 'global'
   dependsOn: [
     managementDnsZone
+  ]
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vnet.id
+    }
+  }
+}
+
+resource keyVaultVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  name: 'privatelink.vaultcore.azure.net/kv-vnet-dns-link'
+  location: 'global'
+  dependsOn: [
+    keyVaultDnsZone
   ]
   properties: {
     registrationEnabled: false

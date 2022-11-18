@@ -162,6 +162,7 @@ module dnsZoneModule 'shared/dnszone.bicep'  = {
     vnetRG: vnetResourceGroupName
     apimName: apimName
     apimRG: apimRG.name
+    keyVaultName: shared.outputs.keyVaultName
   }
 }
 
