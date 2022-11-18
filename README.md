@@ -21,7 +21,8 @@ This repo is a fork of [Enterprise-Scale-APIM](https://github.com/Azure/apim-lan
 ## Current limitations
 
 - For the moment, the subnets must be specified in the bicep/networking/networking.bicep file. They need to be three no existing subnets on the subnet with /24. Smaller sizes have not been tested but are possible. This is an area of improvement.
-![image](https://user-images.githubusercontent.com/86074746/202821311-1a954cdf-ccdf-49b9-8a67-5bcb7324f9a6.png)
+
+   ![image](https://user-images.githubusercontent.com/86074746/202821311-1a954cdf-ccdf-49b9-8a67-5bcb7324f9a6.png)
 
 
 ## How to deploy in your environment
