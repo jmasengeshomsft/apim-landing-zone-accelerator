@@ -76,6 +76,15 @@ resource configurationDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   properties: {}
 }
 
+// resource keyVaultDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+//   name: 'privatelink.vaultcore.azure.net'
+//   location: 'global'
+//   dependsOn: [
+//     vnet
+//   ]
+//   properties: {}
+// }
+
 // resource scmDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 //   name: 'scm.azure-api.net'
 //   location: 'global'
@@ -166,6 +175,7 @@ resource configurationRecord 'Microsoft.Network/privateDnsZones/A@2020-06-01' = 
     ttl: 36000
   }
 }
+
 
 // resource scmRecord 'Microsoft.Network/privateDnsZones/A@2020-06-01' = {
 //   name: 'scm.azure-api.net/${apimName}'

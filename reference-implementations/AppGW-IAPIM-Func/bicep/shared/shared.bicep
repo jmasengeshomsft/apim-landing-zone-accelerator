@@ -9,6 +9,9 @@ param location string
 @description('The full id string identifying the target subnet for the CI/CD Agent VM')
 param CICDAgentSubnetId string
 
+@description('The full id string identifying the target subnet for the CI/CD Agent VM')
+param PrivateLinkSubnetId string
+
 @description('The user name to be used as the Administrator for all VMs created by this deployment')
 param vmUsername string = ''
 
@@ -89,7 +92,7 @@ module vm_devopswinvm './createvmwindows.bicep' = if (toLower(CICDAgentType)!='n
 //   }
 // }
 
-resource key_vault 'Microsoft.KeyVault/vaults@2019-09-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -124,6 +127,46 @@ resource key_vault 'Microsoft.KeyVault/vaults@2019-09-01' = {
   }
 }
 
+resource privateDnsZoneName 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
+  name: 'privatelink.vaultcore.azure.net'
+  scope: resourceGroup('jm-networking-rg')
+}
+
+resource kvPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    subnet: {
+      id: PrivateLinkSubnetId
+    }
+    privateLinkServiceConnections: [
+      {
+        name: keyVaultName
+        properties: {
+          privateLinkServiceId: keyVault.id
+          groupIds: [
+            'vault'
+          ]
+        }
+      }
+    ]
+  }
+}
+
+resource privateEndpointDns 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = {
+  name: '${kvPrivateEndpoint.name}/vault-PrivateDnsZoneGroup'
+  properties:{
+    privateDnsZoneConfigs: [
+      {
+        name: 'privatelink.vaultcore.azure.net'
+        properties:{
+          privateDnsZoneId: privateDnsZoneName.id
+        }
+      }
+    ]
+  }
+}
+
 // Outputs
 output appInsightsConnectionString string = appInsights.outputs.appInsightsConnectionString
 output CICDAgentVmName string = vm_devopswinvm.name
@@ -131,4 +174,4 @@ output CICDAgentVmName string = vm_devopswinvm.name
 output appInsightsName string=appInsights.outputs.appInsightsName
 output appInsightsId string=appInsights.outputs.appInsightsId
 output appInsightsInstrumentationKey string=appInsights.outputs.appInsightsInstrumentationKey
-output keyVaultName string = key_vault.name
+output keyVaultName string = keyVault.name
