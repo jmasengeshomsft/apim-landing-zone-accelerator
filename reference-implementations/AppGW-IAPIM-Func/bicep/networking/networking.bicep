@@ -35,9 +35,9 @@ param deploymentEnvironment string
 param apimCSVNetName string
 
 
-param privateEndpointAddressPrefix string = '10.0.7.0/24'
-param backEndAddressPrefix string = '10.0.6.0/24'
-param apimAddressPrefix string = '10.0.5.0/24'
+param privateEndpointAddressPrefix string = '10.1.1.0/26'
+param backEndAddressPrefix string = '10.1.1.64/26'
+param apimAddressPrefix string = '10.1.1.128/26'
 param location string
 
 
