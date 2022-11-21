@@ -42,7 +42,7 @@ param location string
 
 
 // Variables
-var owner = 'APIM Const Set'
+// var owner = 'APIM Const Set'
 
 var privateEndpointSubnetName = 'snet-prep-${workloadName}-${deploymentEnvironment}-${location}-001'
 var backEndSubnetName = 'snet-bcke-${workloadName}-${deploymentEnvironment}-${location}-001'
