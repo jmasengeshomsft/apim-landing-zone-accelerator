@@ -1,7 +1,7 @@
 AZURE_LOCATION: 'canadacentral'
-RESOURCE_NAME_PREFIX: 'mi'
+RESOURCE_NAME_PREFIX: 'me'
 ENVIRONMENT_TAG: 'dev'
 CICD_AGENT_TYPE: 'none'
-VNET_NAME: 'jm-hub-vnet'
-VNET_RG: 'jm-networking-rg'
+VNET_NAME: 'sre-rg-vnet'
+VNET_RG: 'sre-rg'
 DEPLOY_AKS_BACKEND: true
